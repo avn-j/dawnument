@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { accountSetupSchema } from "@/schemas/userSchemas";
 import { getUser } from "@/lib/authFunctions";
-import prisma from "@/utils/prisma/client";
+import { createUser } from "@/services/userService";
 
 export async function setup(values: z.infer<typeof accountSetupSchema>) {
     const result = accountSetupSchema.safeParse(values);
@@ -15,19 +15,14 @@ export async function setup(values: z.infer<typeof accountSetupSchema>) {
     const user = await getUser();
     if (!user) return null;
 
-    const userAccount = await prisma.user.create({
-        data: {
-            id: user.id,
-            firstName,
-            lastName,
-            email,
-            country,
-            dateOfBirth: new Date(dateOfBirth),
-        },
+    const userAccount = await createUser({
+        id: user.id,
+        firstName,
+        lastName,
+        email,
+        country,
+        dateOfBirth: new Date(dateOfBirth),
     });
-
-    console.log(userAccount);
-
     if (!userAccount) return "Could set up user account. Please try again";
 
     redirect("/");
