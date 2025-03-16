@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
@@ -14,6 +14,7 @@ import { z } from "zod";
 import { loginSchema } from "@/schemas/authSchemas";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { IconMoodSad } from "@tabler/icons-react";
 
 import { redirect } from "next/navigation";
 
@@ -31,6 +32,7 @@ export default function LoginForm() {
 
     async function handleSubmit(values: z.infer<typeof loginSchema>) {
         setIsLoading(true);
+        setError("");
 
         const error = await login(values);
 
@@ -48,6 +50,12 @@ export default function LoginForm() {
                 <CardDescription className="text-center">Enter your credentials to access your account</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+                {error && (
+                    <Alert variant="destructive" className="border-red-500 py-2">
+                        <IconMoodSad />
+                        <AlertTitle>{error}</AlertTitle>
+                    </Alert>
+                )}
                 {/* Email & Password Form */}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-2">
@@ -77,8 +85,6 @@ export default function LoginForm() {
                                 </FormItem>
                             )}
                         />
-                        {error && <p className="text-sm text-red-500">{error}</p>}
-
                         <Button type="submit" className="w-full" disabled={isLoading}>
                             {isLoading ? <>Signing in...</> : "Sign In"}
                         </Button>

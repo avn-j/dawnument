@@ -17,10 +17,9 @@ export async function register(values: z.infer<typeof registerSchema>) {
         password,
     });
 
-    if (!data.user?.user_metadata.email_verified) {
-        return;
-    }
+    const user = data?.user;
 
+    if (user?.role === "") return "An account with that email already exists";
     if (error) return error.message;
 
     redirect("/");

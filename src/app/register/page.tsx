@@ -1,11 +1,10 @@
-import { createClient } from "@/utils/supabase/server";
 import RegisterForm from "./components/RegisterForm";
 import { redirect } from "next/navigation";
+import { getUser } from "@/lib/authFunctions";
 
 export default async function RegisterPage() {
-    const supabase = await createClient();
-    const { data } = await supabase.auth.getUser();
-    if (data.user) redirect("/");
+    const user = await getUser();
+    if (user) redirect("/");
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-slate-50">

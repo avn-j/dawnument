@@ -1,10 +1,12 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { IconMoodSad } from "@tabler/icons-react";
 import Link from "next/link";
 import { register } from "../actions";
 import { useState } from "react";
@@ -35,6 +37,7 @@ export default function RegisterForm() {
 
     async function handleSubmit(values: z.infer<typeof registerSchema>) {
         setIsLoading(true);
+        setError("");
 
         const error = await register(values);
         if (error) {
@@ -57,6 +60,12 @@ export default function RegisterForm() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
+                        {error && (
+                            <Alert variant="destructive" className="border-red-500 py-2">
+                                <IconMoodSad />
+                                <AlertTitle>{error}</AlertTitle>
+                            </Alert>
+                        )}
                         {/* Email & Password Form */}
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-2">
@@ -99,7 +108,6 @@ export default function RegisterForm() {
                                         </FormItem>
                                     )}
                                 />
-                                {error && <p className="text-sm text-red-500">{error}</p>}
 
                                 <Button type="submit" className="w-full" disabled={isLoading}>
                                     {isLoading ? <>Creating...</> : "Create an account"}
