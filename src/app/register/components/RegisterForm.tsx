@@ -22,6 +22,8 @@ export default function RegisterForm() {
     const searchParams = useSearchParams();
     const verify = searchParams.get("verify") === "true";
 
+    console.log(verify);
+
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [registerSuccessful, setRegisterSuccessful] = useState(verify ? true : false);
@@ -40,6 +42,7 @@ export default function RegisterForm() {
         setError("");
 
         const error = await register(values);
+        console.log(error);
         if (error) {
             setError(error);
             setIsLoading(false);

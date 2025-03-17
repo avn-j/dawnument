@@ -21,6 +21,4 @@ export async function register(values: z.infer<typeof registerSchema>) {
 
     if (user?.role === "") return "An account with that email already exists";
     if (error) return error.message;
-
-    redirect("/");
 }
