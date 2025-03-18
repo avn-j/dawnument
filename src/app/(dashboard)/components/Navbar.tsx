@@ -9,6 +9,7 @@ import Link from "next/link";
 import { User } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { IconPencil } from "@tabler/icons-react";
 
 const navItems = [
     { name: "Home", href: "/", icon: Home },
@@ -50,6 +51,13 @@ export default function Navbar({ account }: NavbarProps) {
                             {item.name}
                         </Link>
                     ))}
+                    <Link
+                        href="/journal/new"
+                        className="flex items-center gap-3 px-4 py-4 bg-gray-800 text-gray-200 dark:text-gray-300 hover:bg-gray-700 dark:hover:bg-gray-600 rounded-lg"
+                    >
+                        <IconPencil className="w-5 h-5" />
+                        New Journal Entry
+                    </Link>
                 </nav>
             </aside>
 

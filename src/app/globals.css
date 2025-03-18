@@ -119,5 +119,22 @@
   }
   body {
     @apply bg-background text-foreground;
+    
+    button:not([disabled]),
+    [role="button"]:not([disabled]) {
+      cursor: pointer;
+    }
+  }
+
+  .tiptap {
+    @apply h-full w-full outline-none pt-12 px-12;
+  }
+
+  .tiptap p.is-editor-empty:first-child::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
   }
 }
