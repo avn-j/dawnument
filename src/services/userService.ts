@@ -1,6 +1,7 @@
 import prisma from "@/utils/prisma/client";
 import { User } from "@prisma/client";
 import { createNewJournal } from "./journalServices";
+import { DatabaseError } from "@/utils/errors";
 
 type UserPartial = Pick<User, "id" | "country" | "dateOfBirth" | "email" | "firstName" | "lastName">;
 
@@ -22,6 +23,11 @@ export async function createAppUser(user: UserPartial) {
         },
         data: user,
     });
+
+    if (!userAccount) {
+        console.error("Failed to create new app user.");
+        throw new DatabaseError("Failed to create new app user.");
+    }
 
     await createNewJournal(user.id, "My First Journal");
 

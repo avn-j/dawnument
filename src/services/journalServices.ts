@@ -37,14 +37,14 @@ export async function createNewJournalEntry(userId: string, data: JournalEntryPa
         throw new NotFoundError("Could not find journal id.");
     }
 
-    try {
-        return await prisma.journalEntry.create({
-            data: {
-                journalId,
-                ...data,
-            },
-        });
-    } catch (error) {
+    const journalEntry = await prisma.journalEntry.create({
+        data: {
+            journalId,
+            ...data,
+        },
+    });
+
+    if (!journalEntry) {
         console.error("Failed to create journal entry");
         throw new DatabaseError("Failed to create journal entry.");
     }
@@ -57,14 +57,14 @@ export async function getJournalEntriesByUserId(userId: string, journalName: str
         throw new NotFoundError("Could not find journal id.");
     }
 
-    try {
-        return await prisma.journalEntry.findMany({
-            where: {
-                journalId,
-            },
-        });
-    } catch (error) {
-        console.error("Could not get user journal entries");
+    const journalEntry = await prisma.journalEntry.findMany({
+        where: {
+            journalId,
+        },
+    });
+
+    if (!journalEntry) {
+        console.error("Could not retrieve user journal entries");
         throw new DatabaseError("Could not retrieve user's journal entries");
     }
 }

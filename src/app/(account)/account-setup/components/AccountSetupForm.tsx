@@ -40,19 +40,21 @@ export default function AccountSetupForm({ user }: AccountSetupFormProps) {
         setIsLoading(true);
         setError("");
 
-        const error = await setup(values);
-        if (!error) redirect("/");
-
-        setIsLoading(false);
+        try {
+            await setup(values);
+            redirect("/");
+        } catch (error) {
+            if (error instanceof Error) setError(error.message);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
         <Card>
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl font-bold text-center">Set up your new account</CardTitle>
-                <CardDescription className="text-center">
-                    Setup your account below to start using Dawnument
-                </CardDescription>
+                <CardDescription className="text-center">Setup your account below to start using Dawnument</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 <Form {...form}>

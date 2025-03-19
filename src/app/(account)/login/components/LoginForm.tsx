@@ -34,13 +34,16 @@ export default function LoginForm() {
         setIsLoading(true);
         setError("");
 
-        const error = await login(values);
-
-        if (error === "Email not confirmed") redirect("/register?verify=true");
-
-        if (error) setError(error);
-
-        setIsLoading(false);
+        try {
+            await login(values);
+        } catch (error) {
+            if (error instanceof Error) {
+                if (error.message === "Email not confirmed") redirect("/register?verify=true");
+                setError(error.message);
+            }
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -101,13 +104,7 @@ export default function LoginForm() {
                 </div>
 
                 <div>
-                    <Button
-                        variant="outline"
-                        type="button"
-                        disabled={isLoading}
-                        onClick={() => console.log("Test")}
-                        className="w-full"
-                    >
+                    <Button variant="outline" type="button" disabled={isLoading} onClick={() => console.log("Test")} className="w-full">
                         Google
                     </Button>
                 </div>

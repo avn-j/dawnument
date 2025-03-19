@@ -41,15 +41,16 @@ export default function RegisterForm() {
         setIsLoading(true);
         setError("");
 
-        const error = await register(values);
-        console.log(error);
-        if (error) {
-            setError(error);
+        try {
+            await register(values);
+            setRegisterSuccessful(true);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            }
+        } finally {
             setIsLoading(false);
-            return;
         }
-
-        setRegisterSuccessful(true);
     }
 
     return (
@@ -58,9 +59,7 @@ export default function RegisterForm() {
                 <Card>
                     <CardHeader className="space-y-1">
                         <CardTitle className="text-2xl font-bold text-center">Sign up</CardTitle>
-                        <CardDescription className="text-center">
-                            Create a new account with Dawnument today
-                        </CardDescription>
+                        <CardDescription className="text-center">Create a new account with Dawnument today</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         {error && (
