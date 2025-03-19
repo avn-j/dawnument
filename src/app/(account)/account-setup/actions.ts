@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { accountSetupSchema } from "@/schemas/userSchemas";
 import { getUser } from "@/lib/authFunctions";
-import { createUser } from "@/services/userService";
+import { createAppUser } from "@/services/userService";
 
 export async function setup(values: z.infer<typeof accountSetupSchema>) {
     const result = accountSetupSchema.safeParse(values);
@@ -15,7 +15,7 @@ export async function setup(values: z.infer<typeof accountSetupSchema>) {
     const user = await getUser();
     if (!user) return null;
 
-    const userAccount = await createUser({
+    const userAccount = await createAppUser({
         id: user.id,
         firstName,
         lastName,

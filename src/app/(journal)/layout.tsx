@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { getUser } from "@/lib/authFunctions";
 import { redirect } from "next/navigation";
-import { getUserById } from "@/services/userService";
+import { checkProfileCreated, getUserById } from "@/services/userService";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -27,13 +28,14 @@ export default async function RootLayout({
 }>) {
     const user = await getUser();
     if (!user) redirect("/login");
-    const account = await getUserById(user.id);
-    if (!account) redirect("/account-setup");
+    const profileCreated = await checkProfileCreated(user.id);
+    if (!profileCreated) redirect("/account-setup");
 
     return (
         <html lang="en">
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                <main className="bg-gray-50">{children}</main>
+                <main className="bg-gray-100">{children}</main>
+                <Toaster richColors expand={true} />
             </body>
         </html>
     );

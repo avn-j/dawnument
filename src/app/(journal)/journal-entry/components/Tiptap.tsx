@@ -1,6 +1,6 @@
 "use client";
 
-import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
+import { useEditor, EditorContent, BubbleMenu, JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useEffect } from "react";
@@ -8,9 +8,11 @@ import { IconBold, IconItalic, IconStrikethrough } from "@tabler/icons-react";
 
 interface TipTapProps {
     prompt: string;
+    setContent: (content: JSONContent) => void;
+    isSaving: boolean;
 }
 
-const Tiptap = ({ prompt }: TipTapProps) => {
+const Tiptap = ({ prompt, setContent, isSaving }: TipTapProps) => {
     const editor = useEditor({
         extensions: [
             StarterKit,
@@ -19,13 +21,19 @@ const Tiptap = ({ prompt }: TipTapProps) => {
             }),
         ],
         immediatelyRender: false,
+        onUpdate: ({ editor }) => {
+            const content = editor.getJSON();
+            setContent(content);
+        },
+        editable: !isSaving,
     });
 
     useEffect(() => {
         if (editor) {
             editor.commands.focus("end");
+            editor.setOptions({ editable: !isSaving });
         }
-    }, [editor]);
+    }, [editor, isSaving]);
 
     useEffect(() => {
         if (prompt && editor) {
@@ -40,10 +48,7 @@ const Tiptap = ({ prompt }: TipTapProps) => {
         <>
             {editor && (
                 <BubbleMenu editor={editor} className="bg-white border shadow-lg p-2 rounded-lg flex gap-2">
-                    <button
-                        onClick={() => editor.chain().focus().toggleBold().run()}
-                        className={`p-2 rounded ${editor.isActive("bold") ? "bg-gray-300" : ""}`}
-                    >
+                    <button onClick={() => editor.chain().focus().toggleBold().run()} className={`p-2 rounded ${editor.isActive("bold") ? "bg-gray-300" : ""}`}>
                         <IconBold size={16} />
                     </button>
                     <button
@@ -61,7 +66,7 @@ const Tiptap = ({ prompt }: TipTapProps) => {
                 </BubbleMenu>
             )}
 
-            <EditorContent editor={editor} className="w-1/2 text-2xl" />
+            <EditorContent editor={editor} className="w-1/2 text-2xl " />
         </>
     );
 };

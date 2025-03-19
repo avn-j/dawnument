@@ -22,4 +22,34 @@ model User {
   email       String   @unique @db.VarChar()
   country     String   @default("")
   dateOfBirth DateTime @default(now()) @map("date_of_birth")
+
+  journals Journal[]
+
+  @@map("app_users")
+}
+
+model Journal {
+  id          String @id @unique @default(uuid()) @map("journal_id") @db.Uuid
+  journalName String @default("Personal Journal") @map("journal_name")
+  userId      String @db.Uuid
+
+  journalEntries JournalEntry[]
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("journals")
+}
+
+model JournalEntry {
+  id        String   @id @unique @default(uuid()) @map("entry_id") @db.Uuid
+  journalId String   @map("journal_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  entryDate DateTime @map("entry_date") @db.Timestamptz()
+  tags      String?
+  mood      String
+  content   String
+  title     String
+
+  Journal Journal @relation(fields: [journalId], references: [id], onDelete: Cascade)
+
+  @@map("journal_entries")
 }

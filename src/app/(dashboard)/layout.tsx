@@ -4,7 +4,8 @@ import "../globals.css";
 import Navbar from "./components/Navbar";
 import { getUser } from "@/lib/authFunctions";
 import { redirect } from "next/navigation";
-import { getUserById } from "@/services/userService";
+import { checkProfileCreated, getUserById } from "@/services/userService";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -28,8 +29,10 @@ export default async function RootLayout({
 }>) {
     const user = await getUser();
     if (!user) redirect("/login");
+    const profileCreated = await checkProfileCreated(user.id);
+    if (!profileCreated) redirect("/account-setup");
     const account = await getUserById(user.id);
-    if (!account) redirect("/account-setup");
+    if (!account) redirect("/login");
 
     return (
         <html lang="en">
@@ -37,6 +40,7 @@ export default async function RootLayout({
                 <main className="flex">
                     <Navbar account={account} />
                     {children}
+                    <Toaster />
                 </main>
             </body>
         </html>
